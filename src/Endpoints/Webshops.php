@@ -2,63 +2,115 @@
 
 namespace CCVShop\Api\Endpoints;
 
-use Carbon\Carbon;
-use CCVShop\Api\ApiClient;
-use CCVShop\Api\ApiCredentials;
-use CCVShop\Api\BaseCollection;
+use CCVShop\Api\BaseResourceCollection;
 use CCVShop\Api\BaseResource;
 use CCVShop\Api\BaseEndpoint;
-use CCVShop\Api\Resources\Call\GetAll;
-use CCVShop\Api\Resources\Call\GetOne;
-use CCVShop\Api\Resources\Credential;
-use CCVShop\Api\Resources\Merchant;
+use CCVShop\Api\Exceptions\InvalidHashOnResult;
+use CCVShop\Api\Factory\ResourceFactory;
+use CCVShop\Api\Interfaces\Endpoints\Get;
+use CCVShop\Api\Interfaces\Endpoints\GetAll;
+use CCVShop\Api\Resources\MerchantCollection;
+use CCVShop\Api\Resources\Webshop;
 use CCVShop\Api\Resources\WebshopCollection;
-use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
 
-class Webshops extends BaseEndpoint
+class Webshops extends BaseEndpoint implements
+	Get,
+	GetAll
 {
 	protected string $resourcePath = 'webshops';
 	protected ?string $parentResourcePath = 'merchant';
 
-	protected function getResourceObject(): BaseResource
+	/**
+	 * @return Webshop
+	 */
+	protected function getResourceObject(): Webshop
 	{
-		return new \CCVShop\Api\Resources\Webshop($this->client);
+		return new Webshop($this->client);
 	}
 
-	protected function getResourceCollectionObject(): BaseCollection
+	/**
+	 * @return WebshopCollection
+	 */
+	protected function getResourceCollectionObject(): WebshopCollection
 	{
 		return new WebshopCollection();
 	}
 
-	public function get(int $webshopId): \CCVShop\Api\Resources\Webshop
+	/**
+	 * @param int $id
+	 *
+	 * @return Webshop
+	 * @throws InvalidHashOnResult
+	 * @throws GuzzleException
+	 * @throws JsonException
+	 */
+	public function get(int $id): Webshop
 	{
-		return $this->rest_getOne($webshopId, []);
+		/** @var Webshop $result */
+		$result = $this->rest_getOne($id, []);
+
+		return $result;
 	}
 
-	public function getFor(\CCVShop\Api\Resources\Merchant $merchant, array $parameters = [])
+	/**
+	 * @param \CCVShop\Api\Resources\Merchant $merchant
+	 * @param array $parameters
+	 *
+	 * @return Webshop
+	 */
+	public function getFor(\CCVShop\Api\Resources\Merchant $merchant, array $parameters = []): Webshop
 	{
-		return $this->getForId($merchant->id, $parameters);
+		$this->SetParent(ResourceFactory::createParentFromResource($merchant));
+		/** @var WebshopCollection $result */
+		$result = $this->rest_getAll(null, null, $parameters);
+
+		return $result;
 	}
 
-	public function getForId(int $merchantId, array $parameters = [])
+	/**
+	 * @param int $merchantId
+	 * @param array $parameters
+	 *
+	 * @return WebshopCollection
+	 * @throws InvalidHashOnResult
+	 * @throws GuzzleException
+	 */
+	public function getForId(int $merchantId, array $parameters = []): WebshopCollection
 	{
-		$this->parentId = $merchantId;
+		$this->SetParent(ResourceFactory::createParent($this->client->merchant->getResourcePath(), $merchantId));
 
-		return $this->rest_getAll(null, null, $parameters);
+		/** @var WebshopCollection $result */
+		$result = $this->rest_getAll(null, null, $parameters);
+
+		return $result;
 	}
 
-	public function getCredentialsById(int $webshopId): \CCVShop\Api\Resources\Credential
-	{
-		return $this->client->credentials->getForId($webshopId);
-	}
-
-	public function getMerchantsById(int $webshopId): \CCVShop\Api\Resources\MerchantCollection
+	/**
+	 * @param int $webshopId
+	 *
+	 * @return MerchantCollection
+	 * @throws InvalidHashOnResult
+	 * @throws GuzzleException
+	 */
+	public function getMerchantsById(int $webshopId): MerchantCollection
 	{
 		return $this->client->merchant->getForId($webshopId);
 	}
 
-	public function getAll(array $parameters)
+	/**
+	 * @param array $parameters
+	 *
+	 * @return WebshopCollection
+	 * @throws InvalidHashOnResult
+	 * @throws GuzzleException
+	 */
+	public function getAll(array $parameters = []): WebshopCollection
 	{
-		return $this->rest_getAll(null, null, $parameters);
+		/** @var WebshopCollection $result */
+		$result = $this->rest_getAll(null, null, $parameters);
+
+		return $result;
 	}
 }

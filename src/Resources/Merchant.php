@@ -3,6 +3,7 @@
 namespace CCVShop\Api\Resources;
 
 use Carbon\Carbon;
+use CCVShop\Api\BaseEndpoint;
 use CCVShop\Api\BaseResource;
 use GuzzleHttp\Client;
 
@@ -31,5 +32,10 @@ class Merchant extends BaseResource
 	public function getWebshops(): WebshopCollection
 	{
 		return $this->client->webshops->getFor($this);
+	}
+
+	public function getEndpoint(): \CCVShop\Api\Endpoints\Merchant
+	{
+		return $this->client->merchant;
 	}
 }

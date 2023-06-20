@@ -3,43 +3,105 @@
 namespace CCVShop\Api\Endpoints;
 
 use CCVShop\Api\BaseEndpoint;
-use CCVShop\Api\BaseResource;
+use CCVShop\Api\Exceptions\InvalidHashOnResult;
+use CCVShop\Api\Factory\ResourceFactory;
+use CCVShop\Api\Interfaces\Endpoints\Get;
+use CCVShop\Api\Interfaces\Endpoints\GetAll;
+use CCVShop\Api\Resources\Credential;
+use CCVShop\Api\Resources\CredentialCollection;
+use CCVShop\Api\Resources\Webshop;
+use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
 
-class Credentials extends BaseEndpoint
+class Credentials extends BaseEndpoint implements
+	Get,
+	GetAll
 {
 	protected string $resourcePath = 'credentials';
 	protected ?string $parentResourcePath = 'webshops';
 
-	protected function getResourceObject(): BaseResource
+	/**
+	 * @return Credential
+	 */
+	protected function getResourceObject(): Credential
 	{
-		return new \CCVShop\Api\Resources\Credential($this->client);
+		return new Credential($this->client);
 	}
 
-	public function get(int $credentialId): \CCVShop\Api\Resources\Credential
+	/**
+	 * @return CredentialCollection<Credential>
+	 */
+	protected function getResourceCollectionObject(): CredentialCollection
 	{
-		return $this->rest_getOne($credentialId, []);
+		return new CredentialCollection();
 	}
 
-	public function getFor(\CCVShop\Api\Resources\Webshop $webshop, array $parameters = [])
+	/**
+	 * @param int $id
+	 *
+	 * @return Credential
+	 * @throws InvalidHashOnResult
+	 * @throws GuzzleException
+	 * @throws JsonException
+	 */
+	public function get(int $id): Credential
 	{
-		return $this->getForId($webshop->id, $parameters);
+		/** @var Credential $result */
+		$result = $this->rest_getOne($id, []);
+
+		return $result;
 	}
 
-	public function getForId(int $webshopId, array $parameters = [])
+	/**
+	 * @param array $parameters
+	 *
+	 * @return CredentialCollection<Credential>
+	 * @throws InvalidHashOnResult
+	 * @throws GuzzleException
+	 */
+	public function getAll(array $parameters = []): CredentialCollection
 	{
-		$this->parentId = $webshopId;
+		/** @var CredentialCollection<Credential> $collection */
+		$collection = $this->rest_getAll(null, null, $parameters);
 
-		return $this->rest_getAll(null, $parameters);
+		return $collection;
 	}
 
-	public function postFor(\CCVShop\Api\Resources\Webshop $webshop, array $options)
+	/**
+	 * @param Webshop $webshop
+	 * @param array $data
+	 *
+	 * @return Credential
+	 * @throws InvalidHashOnResult
+	 * @throws GuzzleException
+	 * @throws JsonException
+	 */
+	public function postFor(Webshop $webshop, array $data): Credential
 	{
-		return $this->postForId($webshop->id, $options);
+		$this->SetParent(ResourceFactory::createParentFromResource($webshop));
+
+		/** @var Credential $result */
+		$result = $this->rest_post($data);
+
+		return $result;
 	}
 
-	public function postForId(int $webshopId, array $options)
+	/**
+	 * @param int $webshopId
+	 * @param array $data
+	 *
+	 * @return Credential
+	 * @throws InvalidHashOnResult
+	 * @throws GuzzleException
+	 * @throws JsonException
+	 */
+	public function postForId(int $webshopId, array $data): Credential
 	{
-		$this->parentId = $webshopId;
-		return $this->rest_post($options);
+		$this->SetParent(ResourceFactory::createParent($this->client->webshops->getResourcePath(), $webshopId));
+
+		/** @var Credential $result */
+		$result = $this->rest_post($data);
+
+		return $result;
 	}
 }

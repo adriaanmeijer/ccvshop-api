@@ -2,8 +2,10 @@
 
 namespace CCVShop\Api\Resources;
 
+use CCVShop\Api\BaseEndpoint;
 use CCVShop\Api\BaseResource;
 use CCVShop\Api\Endpoints\Credentials;
+use CCVShop\Api\Endpoints\Webshops;
 
 class Webshop extends BaseResource
 {
@@ -15,14 +17,14 @@ class Webshop extends BaseResource
 	public ?int $product_limit_left = null;
 	public ?string $api_root = null;
 
+	public function getEndpoint(): Webshops
+	{
+		return $this->client->webshops;
+	}
+
 	public function getMerchant(): Merchant
 	{
 		return $this->client->merchant->getFor($this);
-	}
-
-	public function getCredentials(): Credential
-	{
-		return $this->client->credentials->getFor($this);
 	}
 
 	public function postCredentials(array $data): Credential

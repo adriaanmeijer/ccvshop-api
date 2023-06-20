@@ -17,4 +17,21 @@ class ResourceFactory
 
 		return $resource;
 	}
+
+	public static function createParentFromResource(BaseResource $resource)
+	{
+		$parent       = new \stdClass();
+		$parent->path = $resource->getEndpoint()->getResourcePath();
+		$parent->id   = $resource->id;
+
+		return $parent;
+	}
+
+	public static function createParent(string $path, int $id) {
+		$parent       = new \stdClass();
+		$parent->path = $path;
+		$parent->id   = $id;
+
+		return $parent;
+	}
 }
