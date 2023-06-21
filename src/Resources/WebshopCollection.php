@@ -7,7 +7,4 @@ use CCVShop\Api\BaseResource;
 
 class WebshopCollection extends BaseResourceCollection
 {
-
-
-
 }

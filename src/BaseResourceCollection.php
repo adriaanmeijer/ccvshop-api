@@ -5,5 +5,4 @@ namespace CCVShop\Api;
 
 abstract class BaseResourceCollection extends \ArrayObject
 {
-
 }

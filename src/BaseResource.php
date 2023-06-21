@@ -5,17 +5,15 @@ namespace CCVShop\Api;
 
 abstract class BaseResource
 {
-	protected ApiClient $client;
+    protected ApiClient $client;
 
-	abstract public function getEndpoint(): BaseEndpoint;
+    abstract public function getEndpoint(): BaseEndpoint;
 
-	/**
-	 * @param ApiClient $client
-	 */
-	public function __construct(ApiClient $client)
-	{
-		$this->client = $client;
-	}
-
-
+    /**
+     * @param ApiClient $client
+     */
+    public function __construct(ApiClient $client)
+    {
+        $this->client = $client;
+    }
 }

@@ -9,26 +9,26 @@ use CCVShop\Api\Endpoints\Webshops;
 
 class Webshop extends BaseResource
 {
-	public ?string $href = null;
-	public ?int $id = null;
-	public ?string $name = null;
-	public ?bool $is_multishop_system = null;
-	public ?int $product_limit = null;
-	public ?int $product_limit_left = null;
-	public ?string $api_root = null;
+    public ?string $href = null;
+    public ?int $id = null;
+    public ?string $name = null;
+    public ?bool $is_multishop_system = null;
+    public ?int $product_limit = null;
+    public ?int $product_limit_left = null;
+    public ?string $api_root = null;
 
-	public function getEndpoint(): Webshops
-	{
-		return $this->client->webshops;
-	}
+    public function getEndpoint(): Webshops
+    {
+        return $this->client->webshops;
+    }
 
-	public function getMerchant(): Merchant
-	{
-		return $this->client->merchant->getFor($this);
-	}
+    public function getMerchant(): Merchant
+    {
+        return $this->client->merchant->getFor($this);
+    }
 
-	public function postCredentials(array $data): Credential
-	{
-		return $this->client->credentials->postFor($this, $data);
-	}
+    public function postCredentials(array $data): Credential
+    {
+        return $this->client->credentials->postFor($this, $data);
+    }
 }

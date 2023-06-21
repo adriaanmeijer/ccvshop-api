@@ -6,5 +6,5 @@ use CCVShop\Api\BaseResourceCollection;
 
 interface GetAll
 {
-	public function getAll(array $parameters = []): BaseResourceCollection;
+    public function getAll(array $parameters = []): BaseResourceCollection;
 }

@@ -9,5 +9,4 @@ use CCVShop\Api\BaseResourceCollection;
  */
 class CredentialCollection extends BaseResourceCollection
 {
-
 }

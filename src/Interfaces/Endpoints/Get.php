@@ -6,5 +6,5 @@ use CCVShop\Api\BaseResource;
 
 interface Get
 {
-	public function get(int $id): BaseResource;
+    public function get(int $id): BaseResource;
 }

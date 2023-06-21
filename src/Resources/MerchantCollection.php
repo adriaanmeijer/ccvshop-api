@@ -6,5 +6,4 @@ use CCVShop\Api\BaseResourceCollection;
 
 class MerchantCollection extends BaseResourceCollection
 {
-
 }
