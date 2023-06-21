@@ -18,21 +18,13 @@ class ResourceFactory
         return $resource;
     }
 
-    public static function createParentFromResource(BaseResource $resource)
+    public static function createParentFromResource(BaseResource $resource): \CCVShop\Api\ParentResource
     {
-        $parent       = new \stdClass();
-        $parent->path = $resource->getEndpoint()->getResourcePath();
-        $parent->id   = $resource->id;
-
-        return $parent;
+        return new \CCVShop\Api\ParentResource($resource->getEndpoint()->getResourcePath(), $resource->id);
     }
 
-    public static function createParent(string $path, int $id)
+    public static function createParent(string $path, int $id): \CCVShop\Api\ParentResource
     {
-        $parent       = new \stdClass();
-        $parent->path = $path;
-        $parent->id   = $id;
-
-        return $parent;
+        return new \CCVShop\Api\ParentResource($path, $id);
     }
 }

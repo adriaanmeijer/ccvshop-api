@@ -98,6 +98,9 @@ class Merchant extends BaseEndpoint implements
      */
     public function patch(\CCVShop\Api\Resources\Merchant $merchant = null): void
     {
+        if ($merchant === null) {
+            throw new \InvalidArgumentException(\CCVShop\Api\Resources\Merchant::class . ' required');
+        }
         $this->rest_patch($merchant->id, [
             'uuid' => $merchant->uuid,
         ]);

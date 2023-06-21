@@ -58,9 +58,9 @@ class Webshops extends BaseEndpoint implements
      * @param \CCVShop\Api\Resources\Merchant $merchant
      * @param array $parameters
      *
-     * @return Webshop
+     * @return WebshopCollection
      */
-    public function getFor(\CCVShop\Api\Resources\Merchant $merchant, array $parameters = []): Webshop
+    public function getFor(\CCVShop\Api\Resources\Merchant $merchant, array $parameters = []): WebshopCollection
     {
         $this->setParent(ResourceFactory::createParentFromResource($merchant));
         /** @var WebshopCollection $result */

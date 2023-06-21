@@ -12,13 +12,11 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
-use JsonException;
-use stdClass;
 
 abstract class BaseEndpoint
 {
     protected ApiClient $client;
-    private ?\stdClass $parent = null;
+    private ?ParentResource $parent = null;
     protected ?int $parentId = null;
     protected ?string $parentResourcePath = null;
     protected string $resourcePath;
@@ -48,9 +46,10 @@ abstract class BaseEndpoint
      * @param array $filters
      *
      * @return BaseResource
-     * @throws Exceptions\InvalidHashOnResult
      * @throws GuzzleException
-     * @throws JsonException
+     * @throws InvalidHashOnResult
+     * @throws InvalidResponseException
+     * @throws \JsonException
      */
     protected function rest_getOne(int $id, array $filters): BaseResource
     {
@@ -72,13 +71,15 @@ abstract class BaseEndpoint
     }
 
     /**
-     * @param $from
-     * @param $limit
+     * @param null $from
+     * @param null $limit
      * @param array $filters
      *
      * @return BaseResourceCollection
-     * @throws Exceptions\InvalidHashOnResult
      * @throws GuzzleException
+     * @throws InvalidHashOnResult
+     * @throws InvalidResponseException
+     * @throws \JsonException
      */
     protected function rest_getAll($from = null, $limit = null, array $filters = []): BaseResourceCollection
     {
@@ -99,6 +100,10 @@ abstract class BaseEndpoint
 
         $collection = $this->getResourceCollectionObject();
 
+        if ($result === null) {
+            return $collection;
+        }
+
         if (!isset($result->items)) {
             $collection[] = Factory\ResourceFactory::createFromApiResult($result, $this->getResourceObject());
         } else {
@@ -114,9 +119,10 @@ abstract class BaseEndpoint
      * @param array $data
      *
      * @return BaseResource
-     * @throws Exceptions\InvalidHashOnResult
      * @throws GuzzleException
-     * @throws JsonException
+     * @throws InvalidHashOnResult
+     * @throws InvalidResponseException
+     * @throws \JsonException
      */
     protected function rest_post(array $data): BaseResource
     {
@@ -143,9 +149,10 @@ abstract class BaseEndpoint
      * @param array $data
      *
      * @return void
-     * @throws Exceptions\InvalidHashOnResult
      * @throws GuzzleException
-     * @throws JsonException
+     * @throws InvalidHashOnResult
+     * @throws InvalidResponseException
+     * @throws \JsonException
      */
     protected function rest_patch(int $id, array $data): void
     {
@@ -171,7 +178,10 @@ abstract class BaseEndpoint
     public function getUri(): string
     {
         if ($this->parent !== null) {
-            return sprintf('%s%s/%s/%s', self::API_PREFIX, $this->parent->path, $this->parent->id, $this->resourcePath);
+            $uri = sprintf('%s%s/%s/%s', self::API_PREFIX, $this->parent->path, $this->parent->id, $this->resourcePath);
+            $this->setParent(null);
+
+            return $uri;
         }
 
         return sprintf('%s%s', self::API_PREFIX, $this->resourcePath);
@@ -220,11 +230,12 @@ abstract class BaseEndpoint
      * @param string $uri
      * @param array $data
      *
-     * @return null|stdClass
-     * @throws Exceptions\InvalidHashOnResult
+     * @return null|\stdClass
      * @throws GuzzleException
+     * @throws InvalidHashOnResult
+     * @throws InvalidResponseException
      */
-    private function doCall(string $uri, array $data): ?stdClass
+    private function doCall(string $uri, array $data): ?\stdClass
     {
         $client = new Client([
             'base_uri' => $this->client->apiCredentials->getHostName(),
@@ -240,16 +251,20 @@ abstract class BaseEndpoint
 
             try {
                 return json_decode((string)$res->getBody(), false, 512, JSON_THROW_ON_ERROR);
-            } catch (JsonException $e) {
+            } catch (\JsonException $e) {
                 throw new InvalidResponseException($e->getMessage());
             }
         } catch (ServerException|ClientException $e) {
-            throw  ExceptionFactory::createFromApiResult((string)$e->getResponse()->getBody());
+            throw ExceptionFactory::createFromApiResult((string)$e->getResponse()->getBody());
         }
     }
 
     /**
-     * @throws JsonException
+     * @param string $uri
+     * @param array|null $data
+     *
+     * @return string
+     * @throws \JsonException
      */
     private function getHash(string $uri, ?array $data = null): string
     {
@@ -312,9 +327,11 @@ abstract class BaseEndpoint
     }
 
     /**
-     * @param stdClass|null $parent
+     * @param ParentResource|null $parent
+     *
+     * @return void
      */
-    protected function setParent(?stdClass $parent): void
+    protected function setParent(?ParentResource $parent): void
     {
         $this->parent = $parent;
     }
