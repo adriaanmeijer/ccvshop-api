@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 
 class Merchant extends BaseResource
 {
+    //SONAR_IGNORE_START
     public ?int $id = null;
     public ?string $href = null;
     public ?string $uuid = null;
@@ -28,6 +29,7 @@ class Merchant extends BaseResource
     public ?string $telephone = null;
     public ?string $tax_number = null;
     public ?string $coc_number = null;
+    //SONAR_IGNORE_END
 
     public function getWebshops(): WebshopCollection
     {

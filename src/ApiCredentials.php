@@ -24,7 +24,7 @@ class ApiCredentials
     /**
      * @return string
      */
-    public function GetHostName(): string
+    public function getHostName(): string
     {
         return $this->hostName;
     }
@@ -32,7 +32,7 @@ class ApiCredentials
     /**
      * @return string
      */
-    public function GetPublic(): string
+    public function getPublic(): string
     {
         return $this->public;
     }
@@ -40,7 +40,7 @@ class ApiCredentials
     /**
      * @return string
      */
-    public function GetSecret(): string
+    public function getSecret(): string
     {
         return $this->secret;
     }

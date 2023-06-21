@@ -63,7 +63,7 @@ class Merchant extends BaseEndpoint implements
      */
     public function getFor(Webshop $webshop, array $parameters = []): MerchantCollection
     {
-        $this->SetParent(ResourceFactory::createParentFromResource($webshop));
+        $this->setParent(ResourceFactory::createParentFromResource($webshop));
         /** @var MerchantCollection $result */
         $result = $this->rest_getAll(null, null, $parameters);
 
@@ -80,7 +80,7 @@ class Merchant extends BaseEndpoint implements
      */
     public function getForId(int $webshopId, array $parameters = []): MerchantCollection
     {
-        $this->SetParent(ResourceFactory::createParent($this->client->webshops->getResourcePath(), $webshopId));
+        $this->setParent(ResourceFactory::createParent($this->client->webshops->getResourcePath(), $webshopId));
 
         /** @var MerchantCollection $result */
         $result = $this->rest_getAll(null, null, $parameters);

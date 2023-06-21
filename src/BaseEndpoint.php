@@ -61,7 +61,7 @@ abstract class BaseEndpoint
 
         $headers = [
             'headers' => [
-                'x-public' => $this->client->apiCredentials->GetPublic(),
+                'x-public' => $this->client->apiCredentials->getPublic(),
                 'x-hash' => $this->getHash($uri),
                 'x-date' => $this->getCurrentDate(),
             ],
@@ -88,7 +88,7 @@ abstract class BaseEndpoint
 
         $headers = [
             'headers' => [
-                'x-public' => $this->client->apiCredentials->GetPublic(),
+                'x-public' => $this->client->apiCredentials->getPublic(),
                 'x-hash' => $this->getHash($uri),
                 'x-date' => $this->getCurrentDate(),
             ],
@@ -126,7 +126,7 @@ abstract class BaseEndpoint
 
         $headers = [
             'headers' => [
-                'x-public' => $this->client->apiCredentials->GetPublic(),
+                'x-public' => $this->client->apiCredentials->getPublic(),
                 'x-hash' => $this->getHash($uri, $data),
                 'x-date' => $this->getCurrentDate(),
             ],
@@ -155,7 +155,7 @@ abstract class BaseEndpoint
 
         $headers = [
             'headers' => [
-                'x-public' => $this->client->apiCredentials->GetPublic(),
+                'x-public' => $this->client->apiCredentials->getPublic(),
                 'x-hash' => $this->getHash($uri, $data),
                 'x-date' => $this->getCurrentDate(),
             ],
@@ -187,7 +187,7 @@ abstract class BaseEndpoint
     protected function validateResponse(Response $res, string $uri): void
     {
         $dataToHash = [
-            $this->client->apiCredentials->GetPublic(),
+            $this->client->apiCredentials->getPublic(),
             $this->getCurrentMethod(),
             $uri,
             $res->getBody(),
@@ -195,7 +195,7 @@ abstract class BaseEndpoint
 
         ];
 
-        $xHash = hash_hmac('sha512', implode('|', $dataToHash), $this->client->apiCredentials->GetSecret());
+        $xHash = hash_hmac('sha512', implode('|', $dataToHash), $this->client->apiCredentials->getSecret());
 
         if ($xHash !== $res->getHeader('x-hash')[0]) {
             throw new InvalidHashOnResult('Result hash not equal');
@@ -227,7 +227,7 @@ abstract class BaseEndpoint
     private function doCall(string $uri, array $data): ?stdClass
     {
         $client = new Client([
-            'base_uri' => $this->client->apiCredentials->GetHostName(),
+            'base_uri' => $this->client->apiCredentials->getHostName(),
         ]);
         try {
             $res = $client->request($this->getCurrentMethod(), $uri, $data);
@@ -254,7 +254,7 @@ abstract class BaseEndpoint
     private function getHash(string $uri, ?array $data = null): string
     {
         $dataToHash = [
-            $this->client->apiCredentials->GetPublic(),
+            $this->client->apiCredentials->getPublic(),
             $this->getCurrentMethod(),
             $uri,
             $data !== null ? json_encode($data, JSON_THROW_ON_ERROR) : '',
@@ -262,7 +262,7 @@ abstract class BaseEndpoint
 
         ];
 
-        return hash_hmac('sha512', implode('|', $dataToHash), $this->client->apiCredentials->GetSecret());
+        return hash_hmac('sha512', implode('|', $dataToHash), $this->client->apiCredentials->getSecret());
     }
 
     /**
@@ -314,7 +314,7 @@ abstract class BaseEndpoint
     /**
      * @param stdClass|null $parent
      */
-    protected function SetParent(?stdClass $parent): void
+    protected function setParent(?stdClass $parent): void
     {
         $this->parent = $parent;
     }

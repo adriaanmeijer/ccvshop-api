@@ -62,7 +62,7 @@ class Webshops extends BaseEndpoint implements
      */
     public function getFor(\CCVShop\Api\Resources\Merchant $merchant, array $parameters = []): Webshop
     {
-        $this->SetParent(ResourceFactory::createParentFromResource($merchant));
+        $this->setParent(ResourceFactory::createParentFromResource($merchant));
         /** @var WebshopCollection $result */
         $result = $this->rest_getAll(null, null, $parameters);
 
@@ -79,7 +79,7 @@ class Webshops extends BaseEndpoint implements
      */
     public function getForId(int $merchantId, array $parameters = []): WebshopCollection
     {
-        $this->SetParent(ResourceFactory::createParent($this->client->merchant->getResourcePath(), $merchantId));
+        $this->setParent(ResourceFactory::createParent($this->client->merchant->getResourcePath(), $merchantId));
 
         /** @var WebshopCollection $result */
         $result = $this->rest_getAll(null, null, $parameters);

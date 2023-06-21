@@ -78,7 +78,7 @@ class Credentials extends BaseEndpoint implements
      */
     public function postFor(Webshop $webshop, array $data): Credential
     {
-        $this->SetParent(ResourceFactory::createParentFromResource($webshop));
+        $this->setParent(ResourceFactory::createParentFromResource($webshop));
 
         /** @var Credential $result */
         $result = $this->rest_post($data);
@@ -97,7 +97,7 @@ class Credentials extends BaseEndpoint implements
      */
     public function postForId(int $webshopId, array $data): Credential
     {
-        $this->SetParent(ResourceFactory::createParent($this->client->webshops->getResourcePath(), $webshopId));
+        $this->setParent(ResourceFactory::createParent($this->client->webshops->getResourcePath(), $webshopId));
 
         /** @var Credential $result */
         $result = $this->rest_post($data);

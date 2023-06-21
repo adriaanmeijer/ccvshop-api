@@ -19,12 +19,17 @@ class ExceptionFactory
         switch ($exceptionData->code) {
             case '405.10':
                 // Method Not Allowed
-                return new \CCVShop\Api\Exceptions\MethodNotAllowedException($exceptionData->developermessage, $exceptionData->status);
+                $ex = new \CCVShop\Api\Exceptions\MethodNotAllowedException($exceptionData->developermessage, $exceptionData->status);
+                break;
             case '500.24':
                 // Internal Server Error - File NotFound. unknown resource id
-                return new \CCVShop\Api\Exceptions\InternalServerErrorException($exceptionData->developermessage, $exceptionData->status);
+                $ex = new \CCVShop\Api\Exceptions\InternalServerErrorException($exceptionData->developermessage, $exceptionData->status);
+                break;
             default:
-                return new \Exception($exceptionData->developermessage, $exceptionData->status);
+                $ex = new \Exception($exceptionData->developermessage, $exceptionData->status);
+                break;
         }
+
+        return $ex;
     }
 }
