@@ -29,6 +29,9 @@ class Merchant extends BaseResource
     public ?string $telephone = null;
     public ?string $tax_number = null;
     public ?string $coc_number = null;
+    public ?string $iban = null;
+    public ?string $bank_name = null;
+
     //SONAR_IGNORE_END
 
     public function getWebshops(): WebshopCollection
